@@ -1,9 +1,11 @@
 package de.andrestefanov.android.featuretoggles.view.profile;
 
-import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import javax.inject.Inject;
@@ -13,33 +15,75 @@ import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputa
 import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputationFeatureProvider;
 import de.andrestefanov.android.featuretoggles.model.data.Profile;
 import io.reactivex.Flowable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ProfileViewModel extends ViewModel {
 
-    private final ProfileReputationFeatureProvider profileReputationFeatureProvider;
-    private final ProfileFeature profileFeature;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private final LiveData<String> mail;
+    private final MutableLiveData<String> reputation = new MutableLiveData<>();
+    private final MutableLiveData<Integer> reputationVisibility = new MutableLiveData<>();
 
     @Inject
     ProfileViewModel(ProfileReputationFeatureProvider profileReputationFeatureProvider, ProfileFeature profileFeature) {
-        this.profileReputationFeatureProvider = profileReputationFeatureProvider;
-        this.profileFeature = profileFeature;
+
+        //// Mail Feature
+        mail = LiveDataReactiveStreams.fromPublisher(
+                profileFeature.getProfile()
+                        .map(optional -> optional
+                                .map(Profile::getMail)
+                                .orElse("Optional empty in ViewModel")
+                        )
+        );
+
+        //// Reputation Feature -- TODO @Stevanof: Kann man das in einem Stream loesen?
+        Flowable<ProfileReputationFeature> repFeature = profileReputationFeatureProvider
+                .feature()
+                .subscribeOn(Schedulers.io());
+
+        // Feature active
+        compositeDisposable.add(
+                repFeature.filter(ProfileReputationFeature::isActive)
+                        .switchMap(ProfileReputationFeature::getReputation)
+                        .subscribe(optionalRep -> showReputation(optionalRep.orElse(0d)))
+        );
+
+        // Feature inactive
+        compositeDisposable.add(
+                repFeature.filter(feature -> !feature.isActive())
+                        .subscribe(profileReputationFeature -> hideReputation())
+        );
+    }
+
+    @Override
+    protected void onCleared() {
+        compositeDisposable.dispose();
+        super.onCleared();
     }
 
     public LiveData<String> getEmail() {
-        return LiveDataReactiveStreams.fromPublisher(
-                profileFeature.getProfile()
-                        .doOnNext(o -> Log.d("ZEFIX", o.toString()))
-                        .map(optional -> optional
-                                .map(Profile::getMail)
-                                .orElse("")));
+        return mail;
     }
 
     public LiveData<String> getReputation() {
-        Flowable<String> flowable = profileReputationFeatureProvider.feature()
-                .flatMap(ProfileReputationFeature::getReputation)
-                .map(optional -> optional.map(String::valueOf).orElse(""));
-
-        return LiveDataReactiveStreams.fromPublisher(flowable);
+        return reputation;
     }
 
+    public LiveData<Integer> getReputationVisibility() {
+        return reputationVisibility;
+    }
+
+    @WorkerThread
+    private void showReputation(Double rep) {
+        reputation.postValue(rep.toString());
+        reputationVisibility.postValue(View.VISIBLE);
+    }
+
+    @WorkerThread
+    private void hideReputation() {
+        reputation.postValue(null);
+        reputationVisibility.postValue(View.GONE);
+    }
 }

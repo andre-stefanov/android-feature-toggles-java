@@ -6,6 +6,7 @@ import io.reactivex.Flowable;
 
 public interface ProfileReputationFeature {
 
-    Flowable<Optional<Double>> getReputation();
+    boolean isActive();
 
+    Flowable<Optional<Double>> getReputation();
 }
