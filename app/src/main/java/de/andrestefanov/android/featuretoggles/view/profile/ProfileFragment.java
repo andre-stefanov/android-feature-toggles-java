@@ -20,13 +20,14 @@ public class ProfileFragment extends DaggerFragment {
     @Inject
     ProfileViewModel viewModel;
 
+    private ProfileFragmentBinding binding;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        de.andrestefanov.android.featuretoggles.databinding.ProfileFragmentBinding binding = ProfileFragmentBinding.inflate(inflater, container, false);
+        binding = ProfileFragmentBinding.inflate(inflater, container, false);
 
-        binding.setViewmodel(viewModel);
 
         return binding.getRoot();
     }
@@ -35,7 +36,8 @@ public class ProfileFragment extends DaggerFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        viewModel.getProfile().observe(this.getViewLifecycleOwner(), binding::setViewState);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewmodel(viewModel);
     }
 
 }

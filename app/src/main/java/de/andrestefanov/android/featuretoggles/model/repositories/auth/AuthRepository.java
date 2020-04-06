@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Flowable;
+import io.reactivex.processors.BehaviorProcessor;
 
 @Singleton
 public class AuthRepository {
@@ -16,7 +17,7 @@ public class AuthRepository {
     }
 
     public Flowable<Optional<String>> currentProfileId() {
-        return Flowable.<Optional<String>>never().startWith(Optional.of("ykzqhp7iGh33bodvkup7"));
+        return BehaviorProcessor.createDefault(Optional.of("ykzqhp7iGh33bodvkup7"));
     }
 
 }

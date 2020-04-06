@@ -1,12 +1,14 @@
 package de.andrestefanov.android.featuretoggles.features.reputation;
 
+import android.util.Log;
+
 import javax.inject.Inject;
 
 import de.andrestefanov.android.featuretoggles.model.repositories.features.FeaturesRepository;
 import de.andrestefanov.android.featuretoggles.model.repositories.profile.ProfileRepository;
 import io.reactivex.Flowable;
 
-public class ProfileReputationFeatureSwitch {
+public class ProfileReputationFeatureProvider {
 
     private static final String FEATURE_FLAG = "feature.1.reputation";
 
@@ -15,7 +17,7 @@ public class ProfileReputationFeatureSwitch {
     private final ProfileRepository profileRepository;
 
     @Inject
-    public ProfileReputationFeatureSwitch(FeaturesRepository repository, ProfileRepository profileRepository) {
+    ProfileReputationFeatureProvider(FeaturesRepository repository, ProfileRepository profileRepository) {
         this.repository = repository;
         this.profileRepository = profileRepository;
     }
