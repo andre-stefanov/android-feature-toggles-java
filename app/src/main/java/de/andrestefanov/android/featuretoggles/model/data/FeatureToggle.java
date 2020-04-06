@@ -4,17 +4,17 @@ import java.util.Objects;
 
 public class FeatureToggle {
 
-    private final String key;
+    private final String flag;
 
     private final String profile;
 
-    public FeatureToggle(String key, String profile) {
-        this.key = key;
+    public FeatureToggle(String flag, String profile) {
+        this.flag = flag;
         this.profile = profile;
     }
 
-    public String getKey() {
-        return key;
+    public String getFlag() {
+        return flag;
     }
 
     public String getProfile() {
@@ -26,13 +26,13 @@ public class FeatureToggle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FeatureToggle feature = (FeatureToggle) o;
-        return Objects.equals(key, feature.key) &&
+        return Objects.equals(flag, feature.flag) &&
                 Objects.equals(profile, feature.profile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, profile);
+        return Objects.hash(flag, profile);
     }
 
 

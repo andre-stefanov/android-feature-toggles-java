@@ -15,9 +15,8 @@ public class AuthRepository {
 
     }
 
-    public Flowable<Optional<String>> currentUser() {
-        // TODO: 9.3.20 implement a dummy authentication
-        return Flowable.<Optional<String>>never().startWith(Optional.of("alice"));
+    public Flowable<Optional<String>> currentProfileId() {
+        return Flowable.<Optional<String>>never().startWith(Optional.of("ykzqhp7iGh33bodvkup7"));
     }
 
 }

@@ -9,15 +9,15 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputatinFeatureSwitch;
+import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputationFeatureSwitch;
 import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputationFeature;
 
 public class ProfileViewModel extends ViewModel {
 
-    private final ProfileReputatinFeatureSwitch profileReputationFeatureProvider;
+    private final ProfileReputationFeatureSwitch profileReputationFeatureProvider;
 
     @Inject
-    ProfileViewModel(ProfileReputatinFeatureSwitch profileReputationFeatureProvider) {
+    ProfileViewModel(ProfileReputationFeatureSwitch profileReputationFeatureProvider) {
         this.profileReputationFeatureProvider = profileReputationFeatureProvider;
     }
 

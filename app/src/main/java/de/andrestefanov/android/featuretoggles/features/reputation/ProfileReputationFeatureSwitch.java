@@ -6,25 +6,27 @@ import de.andrestefanov.android.featuretoggles.model.repositories.features.Featu
 import de.andrestefanov.android.featuretoggles.model.repositories.profile.ProfileRepository;
 import io.reactivex.Flowable;
 
-public class ProfileReputatinFeatureSwitch {
+public class ProfileReputationFeatureSwitch {
+
+    private static final String FEATURE_FLAG = "feature.1.reputation";
 
     private final FeaturesRepository repository;
 
     private final ProfileRepository profileRepository;
 
     @Inject
-    public ProfileReputatinFeatureSwitch(FeaturesRepository repository, ProfileRepository profileRepository) {
+    public ProfileReputationFeatureSwitch(FeaturesRepository repository, ProfileRepository profileRepository) {
         this.repository = repository;
         this.profileRepository = profileRepository;
     }
 
     public Flowable<ProfileReputationFeature> feature() {
-        return repository.activeFeatureToggles().map(list -> list.contains("feature.12345.rreputation"))
+        return repository.isFeatureToggleActive(FEATURE_FLAG)
                 .map(isActive -> {
                     if (isActive) {
-                        return new SimpleProfileReputationFeature(profileRepository);
+                        return new ProfileReputationFeatureImpl(profileRepository);
                     } else {
-                        return new NoopProfileReputationFeature();
+                        return new ProfileReputationFeatureNoop();
                     }
                 });
     }

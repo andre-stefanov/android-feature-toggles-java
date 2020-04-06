@@ -8,12 +8,11 @@ import de.andrestefanov.android.featuretoggles.model.data.Profile;
 import de.andrestefanov.android.featuretoggles.model.repositories.profile.ProfileRepository;
 import io.reactivex.Flowable;
 
-@Singleton
-public class SimpleProfileReputationFeature implements ProfileReputationFeature {
+public class ProfileReputationFeatureImpl implements ProfileReputationFeature {
 
     private final ProfileRepository profileRepository;
 
-    SimpleProfileReputationFeature(ProfileRepository profileRepository) {
+    ProfileReputationFeatureImpl(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
 

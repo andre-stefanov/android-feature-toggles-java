@@ -8,25 +8,15 @@ public class Profile {
 
     private String mail;
 
-    private String imageUrl100;
-
-    private String imageUrl500;
-
     private Double reputation;
 
-    public Profile(String mail, String imageUrl100, String imageUrl500, Double reputation) {
+    public Profile(String mail, Double reputation) {
         this.mail = mail;
-        this.imageUrl100 = imageUrl100;
-        this.imageUrl500 = imageUrl500;
         this.reputation = reputation;
     }
 
     public String getMail() {
         return mail;
-    }
-
-    public String getImageUrl100() {
-        return imageUrl100;
     }
 
     public Double getReputation() {
@@ -39,23 +29,19 @@ public class Profile {
         if (o == null || getClass() != o.getClass()) return false;
         Profile profile = (Profile) o;
         return Objects.equals(mail, profile.mail) &&
-                Objects.equals(imageUrl100, profile.imageUrl100) &&
-                Objects.equals(imageUrl500, profile.imageUrl500) &&
                 Objects.equals(reputation, profile.reputation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mail, imageUrl100, imageUrl500, reputation);
+        return Objects.hash(mail, reputation);
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
         return "Profile{" +
                 "mail='" + mail + '\'' +
-                ", imageUrl100='" + imageUrl100 + '\'' +
-                ", imageUrl500='" + imageUrl500 + '\'' +
                 ", reputation=" + reputation +
                 '}';
     }
