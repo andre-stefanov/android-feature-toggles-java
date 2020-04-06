@@ -28,6 +28,7 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<String> getEmail() {
         return LiveDataReactiveStreams.fromPublisher(
                 profileFeature.getProfile()
+                        .doOnNext(o -> Log.d("ZEFIX", o.toString()))
                         .map(optional -> optional
                                 .map(Profile::getMail)
                                 .orElse("")));

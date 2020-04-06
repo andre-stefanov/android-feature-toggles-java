@@ -23,6 +23,14 @@ public class Profile {
         return mail;
     }
 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public void setReputation(Double reputation) {
+        this.reputation = reputation;
+    }
+
     public Double getReputation() {
         return reputation;
     }
