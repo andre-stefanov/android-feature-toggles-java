@@ -10,6 +10,10 @@ public class Profile {
 
     private Double reputation;
 
+    public Profile() {
+
+    }
+
     public Profile(String mail, Double reputation) {
         this.mail = mail;
         this.reputation = reputation;

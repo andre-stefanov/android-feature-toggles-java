@@ -30,13 +30,13 @@ public class ProfileViewModel extends ViewModel {
                 profileFeature.getProfile()
                         .map(optional -> optional
                                 .map(Profile::getMail)
-                                .orElse(null)));
+                                .orElse("")));
     }
 
     public LiveData<String> getReputation() {
         Flowable<String> flowable = profileReputationFeatureProvider.feature()
                 .flatMap(ProfileReputationFeature::getReputation)
-                .map(optional -> optional.map(String::valueOf).orElse(null));
+                .map(optional -> optional.map(String::valueOf).orElse(""));
 
         return LiveDataReactiveStreams.fromPublisher(flowable);
     }

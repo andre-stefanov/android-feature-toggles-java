@@ -24,7 +24,7 @@ public class Api {
     }
 
     public Flowable<Profile> profile(String profileId) {
-        DocumentReference docRef = fireStore.collection("profiles").document(profileId);
+        DocumentReference docRef = fireStore.collection("profile").document(profileId);
         return RxFirestore.observeDocumentRef(docRef, Profile.class);
     }
 
