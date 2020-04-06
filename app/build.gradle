@@ -50,7 +50,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    compileOnly "com.google.firebase:firebase-firestore:21.4.2"
+    implementation "com.google.firebase:firebase-firestore:21.4.2"
+
+    implementation "com.google.guava:guava:28.2-android"
 
     // Testing
     testImplementation 'junit:junit:4.13'
