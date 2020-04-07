@@ -15,11 +15,6 @@ public class ProfileReputationFeatureImpl implements ProfileReputationFeature {
     }
 
     @Override
-    public boolean isActive() {
-        return true;
-    }
-
-    @Override
     public Flowable<Optional<Double>> getReputation() {
         return profileRepository.profile().map(profile -> profile.map(Profile::getReputation));
     }

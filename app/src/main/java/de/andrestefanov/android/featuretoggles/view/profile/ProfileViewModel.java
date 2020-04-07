@@ -2,11 +2,11 @@ package de.andrestefanov.android.featuretoggles.view.profile;
 
 import android.view.View;
 
-import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -15,52 +15,41 @@ import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputa
 import de.andrestefanov.android.featuretoggles.features.reputation.ProfileReputationFeatureProvider;
 import de.andrestefanov.android.featuretoggles.model.data.Profile;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ProfileViewModel extends ViewModel {
 
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-
     private final LiveData<String> mail;
-    private final MutableLiveData<String> reputation = new MutableLiveData<>();
-    private final MutableLiveData<Integer> reputationVisibility = new MutableLiveData<>();
+    private final LiveData<String> reputation;
+    private final LiveData<Integer> reputationVisibility;
 
     @Inject
     ProfileViewModel(ProfileReputationFeatureProvider profileReputationFeatureProvider, ProfileFeature profileFeature) {
 
-        //// Mail Feature
+        // Mail Feature
         mail = LiveDataReactiveStreams.fromPublisher(
                 profileFeature.getProfile()
                         .map(optional -> optional
                                 .map(Profile::getMail)
-                                .orElse("Optional empty in ViewModel")
+                                .orElse("Email missing")
                         )
         );
 
-        //// Reputation Feature -- TODO @Stevanof: Kann man das in einem Stream loesen?
-        Flowable<ProfileReputationFeature> repFeature = profileReputationFeatureProvider
+        // Reputation Feature
+        Flowable<Optional<Double>> reputationOptionalFlowable = profileReputationFeatureProvider
                 .feature()
-                .subscribeOn(Schedulers.io());
+                .flatMap(ProfileReputationFeature::getReputation);
 
-        // Feature active
-        compositeDisposable.add(
-                repFeature.filter(ProfileReputationFeature::isActive)
-                        .switchMap(ProfileReputationFeature::getReputation)
-                        .subscribe(optionalRep -> showReputation(optionalRep.orElse(0d)))
-        );
+        Flowable<String> reputationFlowable = reputationOptionalFlowable
+                .map(optional -> optional.orElse(0.0))
+                .map(String::valueOf);
 
-        // Feature inactive
-        compositeDisposable.add(
-                repFeature.filter(feature -> !feature.isActive())
-                        .subscribe(profileReputationFeature -> hideReputation())
-        );
-    }
+        reputation = LiveDataReactiveStreams.fromPublisher(reputationFlowable);
 
-    @Override
-    protected void onCleared() {
-        compositeDisposable.dispose();
-        super.onCleared();
+        Flowable<Integer> reputationVisibilityFlowable = reputationOptionalFlowable
+                .map(Optional::isPresent)
+                .map(visible -> (visible) ? View.VISIBLE : View.GONE);
+
+        reputationVisibility = LiveDataReactiveStreams.fromPublisher(reputationVisibilityFlowable);
     }
 
     public LiveData<String> getEmail() {
@@ -75,15 +64,4 @@ public class ProfileViewModel extends ViewModel {
         return reputationVisibility;
     }
 
-    @WorkerThread
-    private void showReputation(Double rep) {
-        reputation.postValue(rep.toString());
-        reputationVisibility.postValue(View.VISIBLE);
-    }
-
-    @WorkerThread
-    private void hideReputation() {
-        reputation.postValue(null);
-        reputationVisibility.postValue(View.GONE);
-    }
 }
