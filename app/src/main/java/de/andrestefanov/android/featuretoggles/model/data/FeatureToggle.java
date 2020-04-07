@@ -5,29 +5,22 @@ import androidx.annotation.NonNull;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class FeatureToggle {
-
-    private String id;
+public class FeatureToggle { ;
 
     private String flag;
 
     private String profile;
 
     public FeatureToggle() {
-        id = "";
         flag = "";
         profile = "";
     }
 
     public FeatureToggle(String id, String flag, String profile) {
-        this.id = id;
         this.flag = flag;
         this.profile = profile;
     }
 
-    public String getId() {
-        return id;
-    }
 
     public String getFlag() {
         return flag;
@@ -35,10 +28,6 @@ public class FeatureToggle {
 
     public String getProfile() {
         return profile;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setFlag(String flag) {
@@ -54,22 +43,20 @@ public class FeatureToggle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FeatureToggle that = (FeatureToggle) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(flag, that.flag) &&
+        return Objects.equals(flag, that.flag) &&
                 Objects.equals(profile, that.profile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, flag, profile);
+        return Objects.hash(flag, profile);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "FeatureToggle{" +
-                "id='" + id + '\'' +
-                ", flag='" + flag + '\'' +
+                "flag='" + flag + '\'' +
                 ", profile='" + profile + '\'' +
                 '}';
     }
