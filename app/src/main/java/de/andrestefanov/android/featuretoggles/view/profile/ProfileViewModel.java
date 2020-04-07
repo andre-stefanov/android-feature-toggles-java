@@ -1,10 +1,12 @@
 package de.andrestefanov.android.featuretoggles.view.profile;
 
-import android.util.Log;
+import android.view.View;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -16,30 +18,50 @@ import io.reactivex.Flowable;
 
 public class ProfileViewModel extends ViewModel {
 
-    private final ProfileReputationFeatureProvider profileReputationFeatureProvider;
-    private final ProfileFeature profileFeature;
+    private final LiveData<String> mail;
+    private final LiveData<String> reputation;
+    private final LiveData<Integer> reputationVisibility;
 
     @Inject
     ProfileViewModel(ProfileReputationFeatureProvider profileReputationFeatureProvider, ProfileFeature profileFeature) {
-        this.profileReputationFeatureProvider = profileReputationFeatureProvider;
-        this.profileFeature = profileFeature;
+
+        // Mail Feature
+        mail = LiveDataReactiveStreams.fromPublisher(
+                profileFeature.getProfile()
+                        .map(optional -> optional
+                                .map(Profile::getMail)
+                                .orElse("Email missing")
+                        )
+        );
+
+        // Reputation Feature
+        Flowable<Optional<Double>> reputationOptionalFlowable = profileReputationFeatureProvider
+                .feature()
+                .flatMap(ProfileReputationFeature::getReputation);
+
+        Flowable<String> reputationFlowable = reputationOptionalFlowable
+                .map(optional -> optional.orElse(0.0))
+                .map(String::valueOf);
+
+        reputation = LiveDataReactiveStreams.fromPublisher(reputationFlowable);
+
+        Flowable<Integer> reputationVisibilityFlowable = reputationOptionalFlowable
+                .map(Optional::isPresent)
+                .map(visible -> (visible) ? View.VISIBLE : View.GONE);
+
+        reputationVisibility = LiveDataReactiveStreams.fromPublisher(reputationVisibilityFlowable);
     }
 
     public LiveData<String> getEmail() {
-        return LiveDataReactiveStreams.fromPublisher(
-                profileFeature.getProfile()
-                        .doOnNext(o -> Log.d("ZEFIX", o.toString()))
-                        .map(optional -> optional
-                                .map(Profile::getMail)
-                                .orElse("")));
+        return mail;
     }
 
     public LiveData<String> getReputation() {
-        Flowable<String> flowable = profileReputationFeatureProvider.feature()
-                .flatMap(ProfileReputationFeature::getReputation)
-                .map(optional -> optional.map(String::valueOf).orElse(""));
+        return reputation;
+    }
 
-        return LiveDataReactiveStreams.fromPublisher(flowable);
+    public LiveData<Integer> getReputationVisibility() {
+        return reputationVisibility;
     }
 
 }

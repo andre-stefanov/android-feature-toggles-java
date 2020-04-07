@@ -1,7 +1,5 @@
 package de.andrestefanov.android.featuretoggles.features.reputation;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import de.andrestefanov.android.featuretoggles.model.repositories.features.FeaturesRepository;
