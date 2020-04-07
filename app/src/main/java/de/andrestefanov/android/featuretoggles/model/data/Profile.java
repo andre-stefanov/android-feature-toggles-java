@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class Profile {
 
     private String mail;

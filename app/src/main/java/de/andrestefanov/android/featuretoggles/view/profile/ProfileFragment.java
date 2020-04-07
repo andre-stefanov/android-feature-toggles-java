@@ -28,7 +28,6 @@ public class ProfileFragment extends DaggerFragment {
                              @Nullable Bundle savedInstanceState) {
         binding = ProfileFragmentBinding.inflate(inflater, container, false);
 
-
         return binding.getRoot();
     }
 

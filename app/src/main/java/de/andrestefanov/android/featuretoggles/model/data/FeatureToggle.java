@@ -1,7 +1,10 @@
 package de.andrestefanov.android.featuretoggles.model.data;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class FeatureToggle {
 
     private String id;
@@ -61,6 +64,7 @@ public class FeatureToggle {
         return Objects.hash(id, flag, profile);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "FeatureToggle{" +
